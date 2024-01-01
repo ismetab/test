@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-permitta-dev-112143-authRole",
+      "UnauthRoleArn": "arn:aws:iam::572063022596:role/amplify-permitta-dev-112143-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::572063022596:role/amplify-permitta-dev-112143-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-permitta-dev-112143-deployment",
+      "UnauthRoleName": "amplify-permitta-dev-112143-unauthRole",
+      "StackName": "amplify-permitta-dev-112143",
+      "StackId": "arn:aws:cloudformation:eu-west-1:572063022596:stack/amplify-permitta-dev-112143/cd9df190-a87e-11ee-90a8-02544da39815",
+      "AmplifyAppId": "digmdgj3e2kf"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "digmdgj3e2kf",
+          "type": "manual"
+        }
+      }
+    }
+  }
+}
