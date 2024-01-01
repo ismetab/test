@@ -1,0 +1,349 @@
+<div class="grid p-fluid">
+
+    <div class="col-12 md:col-12">
+        <div class="card">
+            <h5>Documents</h5>
+            <p-fileUpload name="demo[]" url="./upload.php"
+                          [multiple]="true" accept="image/*" [maxFileSize]="1000000">
+                <ng-template pTemplate="content">
+                </ng-template>
+            </p-fileUpload>
+        </div>
+    </div>
+</div>
+<div class="grid p-fluid">
+	<div class="col-12 md:col-6">
+        <div class="card" [ngStyle]="{'position': 'relative'}">
+            <i class="pi pi-pencil" (click)="editProfileForm()"
+               [ngStyle]="{'position': 'absolute', 'top': '10px', 'right': '10px', 'cursor': 'pointer'}"></i>
+            <form [formGroup]="personalInfoForm">
+                <h5>Personal Info : </h5>
+                <div class="grid formgrid">
+                    <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                        <h5></h5>
+                        <span class="p-float-label">
+                            <input type="text" id="name" pInputText formControlName="name" disabled>
+                            <label for="name">Name</label>
+                        </span>
+                    </div>
+                    <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                        <h5></h5>
+                        <span class="p-float-label">
+                            <input id="middlename" type="text" pInputText formControlName="middleName">
+                            <label for="middlename">Middle Name</label>
+                        </span>
+                    </div>
+                    <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                        <h5></h5>
+                        <span class="p-float-label">
+                            <input id="surname" type="text" pInputText formControlName="surname">
+                            <label for="surname">Surname</label>
+                        </span>
+                    </div>
+                </div>
+                <h5></h5>
+                <span class="p-float-label">
+                    <input id="mobilPhone1" type="text" pInputText formControlName="mobilePhone">
+                    <label for="mobilPhone1">Mobil Phone</label>
+                </span>
+                <h5></h5>
+                <span class="p-float-label">
+                    <textarea id="address" rows="3" cols="30" pInputTextarea formControlName="address"></textarea>
+                    <label for="address">Address</label>
+                </span>
+                <h5></h5>
+                <span class="p-float-label">
+                    <p-calendar id="birthday" formControlName="birthday"></p-calendar>
+                    <label for="birthday">Birthday</label>
+                </span>
+
+                <h5></h5>
+                <p-multiSelect [options]="countries"
+                               [(ngModel)]="selectedMulti"
+                               formControlName="nationalities"
+                               placeholder="Nationality"
+                               optionLabel="name"
+                               class="multiselect-custom"
+                               display="chip">
+                    <ng-template let-country pTemplate="item">
+                        <div class="flex align-items-center">
+                            <img src="assets/demo/images/flag/flag_placeholder.png" [class]="'flag flag-' + country.code.toLowerCase()" style="width:21px"/>
+                            <span class="ml-2">{{country.name}}</span>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+                <br/>
+                <div>
+                    <div class="grid formgrid">
+                        <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                            <button (click)="onPersonalSubmit()" *ngIf="isPersonalFromEditable" pButton pRipple type="button" label="Save" class="p-button-raised p-button-success"></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card" [ngStyle]="{'position': 'relative'}">
+            <i class="pi pi-pencil" (click)="editProfessionalForm()"
+               [ngStyle]="{'position': 'absolute', 'top': '10px', 'right': '10px', 'cursor': 'pointer'}"></i>
+            <form [formGroup]="professionalInfoForm">
+                <h5>Professional information : </h5>
+
+                <h5></h5>
+                <span class="p-float-label">
+                    <textarea id="professionalKnowledge" rows="3" cols="30" pInputTextarea formControlName="professionalKnowledge"></textarea>
+                    <label for="professionalKnowledge">Professional Knowledge</label>
+                </span>
+                <h5></h5>
+                <span class="p-float-label">
+                    <input type="text" id="maximumTravelTime" pInputText formControlName="maximumTravelTime">
+                    <label for="maximumTravelTime">Maximum Travel Time(Hour)</label>
+                </span>
+                <h5></h5>
+                <span class="p-float-label">
+                    <input type="text" id="noticePeriodDays" pInputText formControlName="noticePeriodDays">
+                    <label for="noticePeriodDays">Notice Period(Day)</label>
+                </span>
+                <h5></h5>
+                <span class="p-float-label">
+                        <input type="text" id="expectedSalary" pInputText formControlName="expectedSalary">
+                        <label for="expectedSalary">Expected Salary</label>
+                </span>
+                <h5></h5>
+                <p-multiSelect [options]="cities"
+                               placeholder="Job locations"
+                               class="multiselect-custom"
+                               display="chip"
+                               formControlName="jobLocations">
+                    <ng-template let-cities pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{cities}}</span>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+
+                <h5>Job type</h5>
+                <p-selectButton [options]="paymentOptions"
+                                [multiple]="true"
+                                formControlName="jobTypes"></p-selectButton>
+                <br/>
+
+                <p-multiSelect [options]="driverLicenseCategories"
+                               placeholder="Driver's licence"
+                               class="multiselect-custom"
+                               display="chip"
+                               formControlName="driversLicenseCategory">
+                    <ng-template let-cities pTemplate="item">
+                        <div class="flex align-items-center">
+                            <span class="ml-2">{{cities}}</span>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+
+                <div class="grid formgrid">
+                    <div class="col-3 md:col-3">
+                        <br/>
+                        <div class="field-checkbox">
+                            <p-checkbox binary="true" id="ny" formControlName="ga"></p-checkbox>
+                            <label for="ny">G. A.</label>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="grid formgrid">
+                        <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                            <button (click)="onProfessionalSubmit()" *ngIf="isProfessionalFromEditable" pButton pRipple type="button" label="Save" class="p-button-raised p-button-success"></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+	<div class="col-12 md:col-6">
+        <div class="card" [ngStyle]="{'position': 'relative'}">
+            <i class="pi pi-pencil" (click)="editHealthForm()"
+               [ngStyle]="{'position': 'absolute', 'top': '10px', 'right': '10px', 'cursor': 'pointer'}"></i>
+            <h5>Health Information :</h5>
+            <h6>Are you currently suffering from work-related illnesses? Details:</h6>
+            <div class="grid formgrid">
+                <div class="col-12 md:col-6">
+                    <div class="field-radiobutton">
+                        <p-radioButton name="workRelatedIllnessOptions" [(ngModel)]="sufferingWorkRelatedIllness" value="Yes" id="illnessYes" (ngModelChange)="onWorkRelatedIllnessChange()" [disabled]="!isHealthFromEditable"></p-radioButton>
+                        <label for="illnessYes">Yes</label>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="field-radiobutton">
+                        <p-radioButton name="workRelatedIllnessOptions" [(ngModel)]="sufferingWorkRelatedIllness" value="No" id="illnessNo" (ngModelChange)="onWorkRelatedIllnessChange()" [disabled]="!isHealthFromEditable"></p-radioButton>
+                        <label for="illnessNo">No</label>
+                    </div>
+                </div>
+            </div>
+            <h5></h5>
+            <span class="p-float-label" *ngIf="sufferingWorkRelatedIllness === 'Yes'">
+                <input type="text" id="illnessDetails" [(ngModel)]="workRelatedIllnessDetails" pInputText [disabled]="disableIllnessDetails || !isHealthFromEditable">
+                <label for="illnessDetails">Details</label>
+            </span>
+            <h6>Are you 100% healthy and fit right now? Details:</h6>
+            <div class="grid formgrid">
+                <div class="col-12 md:col-6">
+                    <div class="field-radiobutton">
+                        <p-radioButton name="currentHealthOptions" value="Yes" [(ngModel)]="currentlyHealthy" id="healthYes" (ngModelChange)="onCurrentHealthChange()" [disabled]="!isHealthFromEditable"></p-radioButton>
+                        <label for="healthYes">Yes</label>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="field-radiobutton">
+                        <p-radioButton name="currentHealthOptions" value="No" [(ngModel)]="currentlyHealthy" id="healthNo" (ngModelChange)="onCurrentHealthChange()" [disabled]="!isHealthFromEditable"></p-radioButton>
+                        <label for="healthNo">No</label>
+                    </div>
+                </div>
+            </div>
+            <h5></h5>
+            <span class="p-float-label" *ngIf="currentlyHealthy === 'Yes'">
+                <input type="text" id="currentHealthDetails" [(ngModel)]="currentHealthDetails" pInputText [disabled]="disableCurrentHealthDetails || !isHealthFromEditable">
+                <label for="currentHealthDetails">Details</label>
+            </span>
+            <br/>
+            <div>
+                <div class="grid formgrid">
+                    <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                        <button  *ngIf="isHealthFromEditable" (click)="saveHealthInfo()" pButton pRipple type="button" label="Save" class="p-button-raised p-button-success"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" [ngStyle]="{'position': 'relative'}">
+            <i class="pi pi-pencil" (click)="editExperienceForm()"
+               [ngStyle]="{'position': 'absolute', 'top': '10px', 'right': '10px', 'cursor': 'pointer'}"></i>
+            <h5>Experience :</h5>
+            <form [formGroup]="experienceForm" (ngSubmit)="onExperienceSave()">
+                <div formArrayName="experiences" *ngFor="let experience of experienceForms.controls; let i=index">
+                    <div [formGroupName]="i">
+                        <div class="grid formgrid">
+                            <div class="col-12 mb-3 lg:col-6 lg:mb-0">
+                                <h5></h5>
+                                <span class="p-float-label">
+                                    <p-calendar id="experienceStart" formControlName="startDate"></p-calendar>
+                                    <label for="experienceStart">Start Date</label>
+                                </span>
+                            </div>
+                            <div class="col-12 mb-3 lg:col-6 lg:mb-0">
+                                <h5></h5>
+                                <span class="p-float-label">
+                                    <p-calendar id="experienceEnd" formControlName="endDate"></p-calendar>
+                                    <label for="experienceEnd">End Date</label>
+                                </span>
+                            </div>
+                        </div>
+                        <h5></h5>
+
+                        <span class="p-float-label">
+                            <input id="position" type="text" pInputText formControlName="position">
+                            <label for="position">Position</label>
+                        </span>
+                        <h5></h5>
+
+
+                        <span class="p-float-label">
+                            <input id="CName" type="text" pInputText formControlName="companyName">
+                            <label for="CName">Company Name</label>
+                        </span>
+
+                        <h5></h5>
+                        <span class="p-float-label">
+                            <textarea id="description" rows="3" cols="30" pInputTextarea formControlName="description"></textarea>
+                            <label for="description">Description</label>
+                        </span>
+
+                        <div class="grid formgrid">
+                            <div class="col-3 mb-1 lg:col-2 lg:mb-0">
+                                <h5></h5>
+                                <span class="p-float-label">
+                                    <button *ngIf="isExperienceFromEditable" pButton pRipple type="button" (click)="deleteExperience(i)"  label="Delete" class="p-button-raised p-button-danger"></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p-divider></p-divider>
+                </div>
+                <h5></h5>
+                <div class="grid formgrid">
+                    <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                        <button pButton *ngIf="isExperienceFromEditable"  pRipple type="submit" label="Save" class="p-button-raised p-button-success"></button>
+                    </div>
+                    <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                        <p-splitButton label="Add" icon="pi pi-plus"  *ngIf="isExperienceFromEditable"  (click)="addExperience() "styleClass="p-button-success"></p-splitButton>
+                    </div>
+                </div>
+                <br/>
+            </form>
+        </div>
+
+        <form [formGroup]="educationForm" (ngSubmit)="onEducationSave()">
+            <div class="card" [ngStyle]="{'position': 'relative'}">
+                <i class="pi pi-pencil" (click)="editEducationForm()"
+                   [ngStyle]="{'position': 'absolute', 'top': '10px', 'right': '10px', 'cursor': 'pointer'}"></i>
+                <h5>Education :</h5>
+                <div formArrayName="educationDetails" *ngFor="let experience of educationForms.controls; let i=index">
+                    <div [formGroupName]="i">
+                        <div class="grid formgrid">
+                            <div class="col-12 mb-3 lg:col-6 lg:mb-0">
+                                <h5></h5>
+                                <span class="p-float-label">
+                                    <p-calendar id="eStartDate" formControlName="startDate"></p-calendar>
+                                    <label for="eStartDate">Start Date</label>
+                                </span>
+                            </div>
+                            <div class="col-12 mb-3 lg:col-6 lg:mb-0">
+                                <h5></h5>
+                                <span class="p-float-label">
+                                    <p-calendar id="endDate" formControlName="endDate"></p-calendar>
+                                    <label for="endDate">End Date</label>
+                                </span>
+                            </div>
+                        </div>
+                        <h5></h5>
+                        <span class="p-float-label">
+                            <input id="school" type="text" pInputText formControlName="institutionName">
+                            <label for="school">Institution Name</label>
+                        </span>
+                        <h5></h5>
+
+
+                        <span class="p-float-label">
+                            <input id="degree" type="text" pInputText formControlName="degree">
+                            <label for="degree">Degree</label>
+                        </span>
+
+                        <h5></h5>
+                        <span class="p-float-label">
+                            <textarea id="Edescription" rows="3" cols="30" pInputTextarea formControlName="description"></textarea>
+                            <label for="Edescription">Description</label>
+                        </span>
+
+                        <div class="grid formgrid">
+                            <div class="col-3 mb-1 lg:col-2 lg:mb-0">
+                                <h5></h5>
+                                <span class="p-float-label">
+                                    <button pButton pRipple type="button" *ngIf="isEducationFromEditable" (click)="deleteEducation(i)"  label="Delete" class="p-button-raised p-button-danger"></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p-divider></p-divider>
+                </div>
+                <div class="grid formgrid">
+                    <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                        <button *ngIf="isEducationFromEditable" pButton pRipple type="submit" label="Save" class="p-button-raised p-button-success"></button>
+                    </div>
+                    <div class="col-12 mb-2 lg:col-3 lg:mb-0">
+                        <p-splitButton label="Add" icon="pi pi-plus" *ngIf="isEducationFromEditable" (click)="addEducation() "styleClass="p-button-success"></p-splitButton>
+                    </div>
+                </div>
+            </div>
+        </form>
+	</div>
+</div>

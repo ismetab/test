@@ -1,0 +1,177 @@
+<div class="grid">
+	<div class="col-12">
+		<div class="card">
+			<h5>Filter Menu</h5>
+			<p-table #dt1 [value]="customers1" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [paginator]="true" [globalFilterFields]="['name','country.name','representative.name','status']" responsiveLayout="scroll">
+				<ng-template pTemplate="caption">
+					<div class="flex justify-content-between flex-column sm:flex-row">
+						<button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+						<span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Applicant Name
+							</div>
+						</th>
+						<th style="min-width: 14rem">
+							<div class="flex justify-content-between align-items-center">
+								Applied Company
+							</div>
+						</th>
+						<th style="min-width: 10rem">
+							<div class="flex justify-content-between align-items-center">
+								Application Date
+							</div>
+						</th>
+
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Compatibility
+							</div>
+						</th>
+						<th style="min-width: 8rem">
+							<div class="flex justify-content-between align-items-center">
+								Verified by AI
+							</div>
+						</th>
+                        <th style="min-width: 12rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Status
+                            </div>
+                        </th>
+                        <th style="">
+                            <div class="flex justify-content-between align-items-center">
+                                Actions
+                            </div>
+                        </th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-customer>
+					<tr>
+						<td>
+							{{customer.applicantName}}
+						</td>
+						<td>
+							<span class="image-text ml-2">{{customer.appliedCompanyName}}</span>
+						</td>
+						<td>
+							{{customer.applicationDate | date: 'MM/dd/yyyy'}}
+						</td>
+
+						<td>
+							<p-progressBar [value]="customer.compatibility" [showValue]="false" [style]="{'height': '0.5rem'}"></p-progressBar>
+						</td>
+						<td class="text-center">
+							<i class="pi" [ngClass]="{'true-icon pi-check-circle text-green-500': customer.verified, 'false-icon pi-times-circle text-pink-500': !customer.verified}"></i>
+						</td>
+                        <td>
+                            <span [class]="'customer-badge status-' + customer.status">{{customer.status}}</span>
+                        </td>
+
+                        <td>
+                            <div>
+                                <span class="p-buttonset">
+                                    <button pButton type="button" (click)="profileSidebar = true" icon="pi pi-id-card" class="p-button-raised p-button-info"></button>
+                                    <button pButton type="button" (click)="openMailSidebar(customer)" icon="pi pi-send" class="p-button-raised p-button-info"></button>
+                                </span>
+                            </div>
+                        </td>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="emptymessage">
+					<tr>
+						<td colspan="8">No customers found.</td>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="loadingbody">
+					<tr>
+						<td colspan="8">Loading customers data. Please wait.</td>
+					</tr>
+				</ng-template>
+    		</p-table>
+		</div>
+	</div>
+    <p-sidebar [(visible)]="mailSidebar" position="bottom" [baseZIndex]="10000" [style]="mailSidebarStyles" modal="false">
+        <div class="card">
+            <h3 class="mail-title">Mail Details</h3>
+            <div class="mail-section">
+                <label class="mail-label">Recipient:</label>
+                <div *ngIf="!isEditMode; else editRecipient" class="mail-content">{{ selectedMail.recipient }}</div>
+                <ng-template #editRecipient>
+                    <input [(ngModel)]="mail.recipient" type="text" [style]="mail_input"/>
+                </ng-template>
+            </div>
+
+            <div class="mail-section">
+                <label class="mail-label">Subject:</label>
+                <div *ngIf="!isEditMode; else editSubject" class="mail-content">{{ selectedMail.subject }}</div>
+                <ng-template #editSubject>
+                    <input [(ngModel)]="mail.subject" type="text" [style]="mail_input"/>
+                </ng-template>
+            </div>
+
+            <div class="mail-section">
+                <label class="mail-label">Body:</label>
+                <div *ngIf="!isEditMode; else editBody" class="mail-body">{{ selectedMail.body }}</div>
+                <ng-template #editBody>
+                    <textarea [(ngModel)]="mail.body" [style]="mail_textarea"></textarea>
+                </ng-template>
+            </div>
+
+            <br/>
+
+            <!-- Button group for normal mode -->
+            <div class="p-buttonset" *ngIf="!isEditMode">
+                <button pButton pRipple label="Sent" icon="pi pi-check" (click)="onSendMailClick(selectedApplicationDTO)"></button>
+                <button pButton pRipple label="Edit" icon="pi pi-pencil" (click)="toggleEditMode()"></button>
+                <button pButton pRipple label="Withdrawn" icon="pi pi-trash"></button>
+            </div>
+
+            <!-- Button group for edit mode -->
+            <div class="p-buttonset" *ngIf="isEditMode">
+                <button pButton pRipple label="Save" icon="pi pi-check" (click)="saveMail()"></button>
+                <button pButton pRipple label="Discard" icon="pi pi-times" (click)="discardChanges()"></button>
+            </div>
+
+        </div>
+    </p-sidebar>
+
+
+
+    <p-dialog header="Dialog" [(visible)]="profileSidebar" [modal]="true" showEffect="fade" [style]="{width: '50vw', height: '60vh'}" [breakpoints]="{'960px': '75vw'}">
+        <div class="profile-content">
+            <h5>Biographic Info</h5>
+            <p>Name: John Doe</p>
+            <p>Date of Birth: January 1, 1990</p>
+            <p>Nationality: American</p>
+            <!-- More biographic details here -->
+
+            <h5>Professional Info</h5>
+            <p>Current Position: Software Engineer</p>
+            <p>Years of Experience: 5 years</p>
+            <p>Specialization: Web Development</p>
+            <!-- More professional details here -->
+
+            <h5>Job Posting</h5>
+            <p>Job Title: Senior Web Developer</p>
+            <p>Company: Tech Solutions Inc.</p>
+            <p>Description: Seeking an experienced web developer to lead our development team...</p>
+            <p>Requirements: Advanced knowledge in Angular, experience in team management...</p>
+            <!-- More job posting details here -->
+        </div>
+
+        <ng-template pTemplate="footer">
+            <button pButton icon="pi pi-check" (click)="profileSidebar=false" label="Ok" class="p-button-outlined"></button>
+        </ng-template>
+    </p-dialog>
+
+
+
+
+</div>

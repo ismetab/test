@@ -1,0 +1,40 @@
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0">
+        <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+                <div class="text-center mb-5">
+                    <div class="text-900 text-3xl font-medium mb-3">Register to Permitta AG</div>
+                </div>
+                <div class="text-center">
+                    <div>
+                        <span class="p-float-label">
+                            <input id="email1" type="text" [(ngModel)]="email" pInputText class="w-full md:w-30rem mb-4" style="padding:1rem" required minlength="5"
+                                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                            <label for="email1">Email address</label>
+                        </span>
+                    </div>
+                    <div>
+                        <span class="p-float-label">
+                            <input id="mobilPhone1" type="text" [(ngModel)]="mobilPhone" pInputText class="w-full md:w-30rem mb-4" style="padding:1rem" pattern="[- +()0-9]+">
+                            <label for="mobilPhone1">Mobil Phone</label>
+                        </span>
+                    </div>
+                    <div>
+                         <span class="p-float-label">
+                            <input id="fullName1" type="text" [(ngModel)]="fullName"  pInputText class="w-full md:w-30rem mb-4" style="padding:1rem" required minlength="5">
+                            <label for="fullName1">Full Name</label>
+                        </span>
+                    </div>
+                    <div>
+                         <span class="p-float-label">
+                           <p-password id="password1" [(ngModel)]="password"  [toggleMask]="true" styleClass="mb-4" inputStyleClass="w-full p-3 md:w-30rem" required minlength="8"></p-password>
+                            <label for="password1">Password</label>
+                        </span>
+                    </div>
+                    <button pButton pRipple label="Register" [disabled]="!email || !mobilPhone || !fullName || !password" (click)="onRegister()" class="w-full p-3 text-xl" [routerLink]="['/auth/login']"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
