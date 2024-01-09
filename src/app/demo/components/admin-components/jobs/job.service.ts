@@ -14,6 +14,8 @@ export class JobService {
     private jobUrl = environment.apiUrl + environment.job;
     // job transaction url to web api
     private jobTransactionUrl = environment.apiUrl + environment.jobTransaction;
+    // profile url to web api
+    private profileUrl = environment.apiUrl + environment.startMatchingOperation;
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -127,6 +129,18 @@ export class JobService {
             tap(_ => this.log("Info", `updated job id=${job.jobTitle}`)),
             catchError(this.handleError<any>('updateJob'))
         );
+    }
+
+
+
+    /** POST: start matching operation */
+    startMatchingOperation() {
+        this.http.post<void>(this.profileUrl, null)
+            .subscribe({
+                error: (error) => {
+                    console.error('Add job operation is failed', error);
+                }
+            });
     }
 
     /**

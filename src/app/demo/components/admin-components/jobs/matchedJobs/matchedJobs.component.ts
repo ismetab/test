@@ -36,4 +36,7 @@ export class MatchedJobsComponent implements OnInit {
         this.selectedUserMobilPhone = (<JobTransactionDTO>event.value).user.mobilPhone;
     }
 
+    startMatchingOperation() {
+        this.jobService.startMatchingOperation();
+    }
 }

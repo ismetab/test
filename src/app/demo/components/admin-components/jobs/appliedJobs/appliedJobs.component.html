@@ -1,7 +1,7 @@
 <div class="grid p-fluid">
     <div class="col-3">
         <p-listbox [options]="jobsTransaction" [listStyle]="{ height: '43rem' }" (onChange)="onChange($event)">
-            <p-header>Denied Jobs</p-header>
+            <p-header>Applied Jobs</p-header>
             <ng-template let-jobsTransaction pTemplate="item">
                 <div class="flex flex-wrap p-2 align-items-center gap-3">
                     <div class="flex-1 flex flex-column gap-2">
