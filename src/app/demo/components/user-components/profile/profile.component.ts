@@ -8,6 +8,9 @@ import {ProfessionalInfoService} from "./services/professional-info.service";
 import {HealthService} from "./services/health.service";
 import {ExperienceService} from "./services/experience.service";
 import {EducationService} from "./services/education.service";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../../../environments/environment";
+import {DocumentService} from "./services/document.service";
 
 @Component({
     templateUrl: './profile.component.html'
@@ -34,6 +37,9 @@ export class ProfileComponent implements OnInit {
     isHealthFromEditable = false;
     isExperienceFromEditable= false;
     isEducationFromEditable= false;
+    documents: any[];
+    uploadedFiles: any[] = [];
+
 
     constructor(private countryService: CountryService,
                 private fb: FormBuilder,
@@ -42,7 +48,9 @@ export class ProfileComponent implements OnInit {
                 private experienceService : ExperienceService,
                 private educationService : EducationService,
                 private professionalInfoService: ProfessionalInfoService,
-                private authService: AuthenticationService) { }
+                private authService: AuthenticationService,
+                private http: HttpClient,
+                private documentService: DocumentService) { }
 
     ngOnInit() {
 
@@ -85,6 +93,7 @@ export class ProfileComponent implements OnInit {
         this.loadUserHealth();
         this.loadUserExperience();
         this.loadUserEducation();
+        this.loadUserDocuments();
 
         this.countryService.getCountries().then(countries => {
             this.countries = countries;
@@ -154,6 +163,43 @@ export class ProfileComponent implements OnInit {
     get experienceForms() {
         return this.experienceForm.get('experiences') as FormArray;
     }
+
+    myUploadHandler(event) {
+        const formData = new FormData();
+        event.files.forEach((file) => {
+            formData.append('files', file, file.name);
+        });
+
+        formData.append('userId', this.authService.getId().toString());
+
+        let url = environment.apiUrl + '/upload';
+        this.http.post(url, formData, { responseType: 'text' }).subscribe(
+            response => {
+                console.log(response);
+                alert("File saved successfully");
+                this.loadUserDocuments();
+            },
+            error => {
+                console.error('Error uploading file:', error);
+                alert("Failed to upload file");
+            }
+        );
+    }
+
+
+    myUploadHandlerDraft(event) {
+        const userId = this.authService.getId();
+        this.documentService.uploadDocuments(event.files, userId).subscribe({
+            next: (response) => {
+                alert('Experience  saved successfully');
+                this.editEducationForm();
+            },
+            error: (error) => {
+                console.error('Error saving Experience', error);
+            }
+        });
+    }
+
 
 
     addExperience() {
@@ -427,6 +473,17 @@ export class ProfileComponent implements OnInit {
         });
     }
 
+    downloadFile() {
+        this.documentService.getFiles(this.authService.getId()).subscribe(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = 'downloadedfile'; // You might want to set an actual file name
+            anchor.click();
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
     editProfileForm() {
         if (this.isPersonalFromEditable) {
             this.personalInfoForm.disable();
@@ -476,6 +533,25 @@ export class ProfileComponent implements OnInit {
             this.isEducationFromEditable = true;
 
         }
+    }
+
+    private loadUserDocuments() {
+        this.documentService.getDocumentsByUserId(this.authService.getId()).subscribe(docs => {
+            this.documents = docs;
+        }, error => {
+            console.error('Error loading documents:', error);
+        });
+    }
+
+    deleteDocument(id) {
+        this.documentService.deleteDocument(id, this.authService.getId()).subscribe(() => {
+            // Handle successful deletion
+            // For example, remove the document from the documents array
+            this.documents = this.documents.filter(doc => doc.id !== id);
+            alert("Removed successfully.")
+        }, error => {
+            console.error('Error deleting document:', error);
+        });
     }
 }
 

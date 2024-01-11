@@ -35,7 +35,7 @@ export class RegisterComponent {
             fullName: this.fullName
         };
 
-        this.http.post<void>(environment.apiUrl + '/register', payload)
+        this.http.post<void>('http://localhost:8080/register', payload)
             .subscribe({
                 next: () => {
                     this.router.navigate([environment.loginPage]);

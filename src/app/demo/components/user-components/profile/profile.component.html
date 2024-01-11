@@ -3,13 +3,28 @@
     <div class="col-12 md:col-12">
         <div class="card">
             <h5>Documents</h5>
-            <p-fileUpload name="demo[]" url="./upload.php"
-                          [multiple]="true" accept="image/*" [maxFileSize]="1000000">
-                <ng-template pTemplate="content">
-                </ng-template>
+            <div class="flex flex-wrap gap-2">
+
+                <ul>
+                    <li *ngFor="let doc of documents">
+                        {{ doc.fileName }}
+                        <button (click)="deleteDocument(doc.id)" class="p-button-rounded p-button-danger p-button-text">
+                            <i class="pi pi-times"></i> <!-- Font Awesome icon -->
+                        </button>
+
+                    </li>
+                </ul>
+            </div>
+
+            <p-fileUpload name="demo[]" customUpload="true" (uploadHandler)="myUploadHandler($event)"
+                          [multiple]="true" accept="application/pdf" [maxFileSize]="10000000">
+                <!-- ... existing file upload template -->
             </p-fileUpload>
         </div>
     </div>
+
+
+
 </div>
 <div class="grid p-fluid">
 	<div class="col-12 md:col-6">
