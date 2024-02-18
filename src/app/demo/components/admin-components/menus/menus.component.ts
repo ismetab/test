@@ -25,7 +25,7 @@ export class MenusComponent implements OnInit {
 
     stepsItems: MenuItem[] = [];
 
-    slideItems: MenuItem[] = [];
+    slideItems: MenuItem[] = [];F
 
     menuItems: MenuItem[] = [];
 

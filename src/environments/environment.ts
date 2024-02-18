@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-    apiUrl: 'http://localhost:8080',
+    apiUrl: 'http://98.71.32.225:8080',
     loginPage: '/',
     accessDenied: '/auth/access',
     userDashboard: "user",
@@ -29,7 +29,10 @@ export const environment = {
     jobTransaction: '/jobTransaction',
     startMatchingOperation: '/startMatchingOperation',
     jobTransactionUpdate: '/jobTransactionUpdate',
-    user: '/user'
+    cvUpload: '/uploadResume',
+    user: '/user',
+    getAllUser: '/getUsers',
+    getNumberOfEntries: '/getNumberOfEntries'
 };
 
 /*

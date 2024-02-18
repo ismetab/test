@@ -1,40 +1,43 @@
-<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
-    <div class="flex flex-column align-items-center justify-content-center">
-        <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0">
-        <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
-                <div class="text-center mb-5">
-                    <div class="text-900 text-3xl font-medium mb-3">Register to Permitta AG</div>
-                </div>
-                <div class="text-center">
-                    <div>
-                        <span class="p-float-label">
-                            <input id="email1" type="text" [(ngModel)]="email" pInputText class="w-full md:w-30rem mb-4" style="padding:1rem" required minlength="5"
-                                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
-                            <label for="email1">Email address</label>
-                        </span>
-                    </div>
-                    <div>
-                        <span class="p-float-label">
-                            <input id="mobilPhone1" type="text" [(ngModel)]="mobilPhone" pInputText class="w-full md:w-30rem mb-4" style="padding:1rem" pattern="[- +()0-9]+">
-                            <label for="mobilPhone1">Mobil Phone</label>
-                        </span>
-                    </div>
-                    <div>
-                         <span class="p-float-label">
-                            <input id="fullName1" type="text" [(ngModel)]="fullName"  pInputText class="w-full md:w-30rem mb-4" style="padding:1rem" required minlength="5">
-                            <label for="fullName1">Full Name</label>
-                        </span>
-                    </div>
-                    <div>
-                         <span class="p-float-label">
-                           <p-password id="password1" [(ngModel)]="password"  [toggleMask]="true" styleClass="mb-4" inputStyleClass="w-full p-3 md:w-30rem" required minlength="8"></p-password>
-                            <label for="password1">Password</label>
-                        </span>
-                    </div>
-                    <button pButton pRipple label="Register" [disabled]="!email || !mobilPhone || !fullName || !password" (click)="onRegister()" class="w-full p-3 text-xl" [routerLink]="['/auth/login']"></button>
-                </div>
+<div class="col-12 d-flex justify-content-center">
+
+    <!-- Main Column: Centered with flexbox -->
+    <div class="card card-w-title" style="margin: auto; width: 60%;">
+        <div class="icon-container">
+            <i class="pi pi-arrow-left icon" (click)="goToDashboard()" title="Back to Dashboard"></i>
+        </div>
+        <!-- Card with title -->
+        <div class="flex flex-wrap justify-content-center">
+            <!-- Flex container for Steps, centered content -->
+
+            <div class="col-10 md:col-8">
+                <h5>Steps</h5>
+                <p-steps [model]="routeItems" [activeIndex]="currentStep" styleClass="w-100 mt-5" [readonly]="true"></p-steps>
             </div>
+        </div>
+    </div>
+</div>
+<div class="col-12">
+    <div class="card" style="margin: auto; width: 60%;">
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr; grid-gap: 10%;">
+            <div style="grid-column-start: 2; grid-column-end: 3;">
+                <app-step-one *ngIf="currentStep === 1"></app-step-one>
+                <app-step-professional *ngIf="currentStep === 2"></app-step-professional>
+                <app-step-health *ngIf="currentStep === 3"></app-step-health>
+                <app-step-experience *ngIf="currentStep === 4"></app-step-experience>
+                <app-step-education *ngIf="currentStep === 5"></app-step-education>
+                <app-step-document *ngIf="currentStep === 6"></app-step-document>
+            </div>
+        </div>
+        <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="medium" color="#fff" type="ball-scale-ripple-multiple">
+            <p style="color: white;">Loading...</p>
+        </ngx-spinner>
+
+        <div class="navigation-buttons flex flex-wrap justify-content-center">
+            <span class="p-buttonset">
+                <button *ngIf="currentStep > 1" pButton type="button" icon="pi pi-chevron-left" class="p-button-raised p-button-info" (click)="goToPrevious()">Back</button>
+                <button *ngIf="currentStep < totalSteps" pButton type="button" icon="pi pi-chevron-right" class="p-button-raised p-button-info" (click)="goToNext()">Next</button>
+                <button *ngIf="currentStep === totalSteps" pButton type="button" icon="pi pi-check" class="p-button-raised p-button-info" (click)="finishProcess()"> Finish</button>
+            </span>
         </div>
     </div>
 </div>

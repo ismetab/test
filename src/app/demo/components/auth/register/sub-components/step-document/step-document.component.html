@@ -1,0 +1,18 @@
+<h4>Additional Documents:</h4>
+<br/>
+
+<div *ngIf="uploadedFileNames.length > 0">
+    <h6>Uploaded Files:</h6>
+    <ul>
+        <li *ngFor="let fileName of uploadedFileNames">{{ fileName }}</li>
+    </ul>
+</div>
+<div class="grid p-fluid">
+    <div class="col-12 mb-12 lg:col-12 lg:mb-12">
+    <span class="p-float-label">
+      <p-fileUpload name="demo[]" customUpload="true" (uploadHandler)="myUploadHandler($event)"
+                    [multiple]="true" accept="application/pdf" [maxFileSize]="10000000">
+      </p-fileUpload>
+    </span>
+    </div>
+</div>

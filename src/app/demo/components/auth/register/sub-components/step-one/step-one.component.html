@@ -1,0 +1,203 @@
+<h4>Personal Info :</h4>
+<br/>
+<br/>
+
+<style>
+    .avatar-container {
+        position: relative;
+        width: fit-content;
+        margin: auto; /* Center the container */
+    }
+
+    .image-container {
+        height: 200px;
+        width: 200px;
+        z-index: 1;
+        border-radius: 50%;
+        background-color: #fff;
+        background-position: center;
+        background-size: cover;
+        box-shadow: 0 10px 20px rgba(108, 147, 0, 0.1);
+    }
+
+    .icon-wrapper {
+        position: absolute;
+        height: 40px;
+        width: 40px;
+        padding: 0.35rem;
+        background-color: #2962FF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        right: 0;
+        top: 75%;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .icon-wrapper:hover {
+        transition: all 0.25s;
+        background-color: #234dbf; /* Adjusted color for hover effect */
+    }
+
+    .icon {
+        color: white;
+        /* Fallback if you are not using Angular Material icons */
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+    }
+
+    input[type='file'] {
+        display: none;
+    }
+</style>
+
+
+<div class="grid p-fluid">
+    <div class="col-12 mb-12 lg:col-12 lg:mb-0">
+        <div class="avatar-container">
+            <div class="image-container" [ngStyle]="{'background-image': 'url(' + imageUrl + ')'}"></div>
+            <label for="avatar-input-file">
+                <div class="icon-wrapper">
+                    <input type="file" id="avatar-input-file" accept="image/*" (change)="onImgSelected($event)" hidden>
+                    <span class="icon">✎</span>
+                </div>
+            </label>
+        </div>
+    </div>
+
+
+
+    <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+        <span class="p-float-label">
+            <input type="text" id="name" name="name" [(ngModel)]="personalInfo.name" pInputText>
+            <label for="name">Full Name</label>
+        </span>
+    </div>
+    <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+        <span class="p-float-label">
+            <input id="mobilePhone1" name="mobilePhone" [(ngModel)]="personalInfo.mobilePhone" type="text" pInputText>
+            <label for="mobilePhone1">Mobil Phone</label>
+        </span>
+    </div>
+    <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+        <span class="p-float-label">
+            <input id="email" name="email" [(ngModel)]="email" type="text" pInputText>
+            <label for="email">E-mail</label>
+        </span>
+    </div>
+    <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+        <span class="p-float-label">
+            <p-calendar id="birthday" name="birthday" [(ngModel)]="personalInfo.birthday"></p-calendar>
+            <label for="birthday">Birthday</label>
+        </span>
+    </div>
+    <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+        <span class="p-float-label">
+            <p-password id="password1" [(ngModel)]="password"  [toggleMask]="true" styleClass="mb-4" inputStyleClass="w-full p-3 md:w-30rem" [feedback]="false"></p-password>
+            <label for="password1">Password</label>
+        </span>
+    </div>
+</div>
+<h3></h3>
+<div class="grid p-fluid">
+    <div class="col-12 mb-12 lg:col-12 lg:mb-0">
+        <span class="p-float-label">
+            <textarea id="address" name="address" [(ngModel)]="personalInfo.address" rows="3" cols="30" pInputTextarea></textarea>
+            <label for="address">Address</label>
+        </span>
+    </div>
+
+</div>
+<h5></h5>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="#4A90E2" type="ball-spin-clockwise-fade-rotating">
+    <p style="color: #4A90E2; font-size: 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">Loading...</p>
+</ngx-spinner>
+
+
+<div class="grid p-fluid">
+    <div class="col-12 mb-4 lg:col-4 lg:mb-0">
+<p-multiSelect
+                    [options]="countries"
+                    [(ngModel)]="selectedCountries"
+                    placeholder="Nationality"
+                   optionLabel="name"
+                   class="multiselect-custom"
+                   display="chip">
+        <ng-template let-country pTemplate="item">
+            <div class="flex align-items-center">
+                <img src="assets/demo/images/flag/flag_placeholder.png" [class]="'flag flag-' + country.code.toLowerCase()" style="width:21px"/>
+                <span class="ml-2">{{country.name}}</span>
+            </div>
+        </ng-template>
+    </p-multiSelect>
+    <br/>
+    <p-dialog header="Resume Submission Portal" [(visible)]="requireResume" [modal]="true" showEffect="fade" [style]="{width: '50vw'}" [breakpoints]="{'960px': '75vw'}" (onHide)="onManualEntry()">
+        <style>
+            .dialog-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+
+            .section {
+                margin: 20px;
+                text-align: center;
+                width: 80%;
+            }
+
+            .section h3 {
+                margin-bottom: 15px;
+                color: #333;
+                font-size: 1.2em;
+            }
+
+            .section input, .section p-button {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .upload-section p-message {
+                margin-top: 10px;
+            }
+        </style>
+
+        <div class="dialog-container">
+            <!-- Initial Options Section -->
+            <div *ngIf="!isNameEntryRequired && !isResumeUploadSelected">
+                <div class="section">
+                    <h3>Would You Like to Upload Your Resume?</h3>
+                    <p-button label="Upload Resume" icon="pi pi-upload" styleClass="p-button-success" (onClick)="showResumeUpload()"></p-button>
+                </div>
+
+                <div class="section">
+                    <h3>Or, Would You Prefer to Enter Details Manually?</h3>
+                    <p-button label="Manual Entry" icon="pi pi-pencil" styleClass="p-button-info" (onClick)="onManualEntry()"></p-button>
+                </div>
+            </div>
+
+            <!-- Resume Upload Section -->
+            <div *ngIf="isResumeUploadSelected" class="section upload-section">
+                <h3>Resume Upload</h3>
+                <p-fileUpload mode="basic" name="resume" accept=".pdf" [maxFileSize]="10485760" chooseLabel="Browse" (onSelect)="onFileSelected($event)" customUpload="true">
+                    <ng-template pTemplate="content">
+                        <p-message severity="info" text="Accepted formats: .pdf (Max size: 10 MB)"></p-message>
+                    </ng-template>
+                </p-fileUpload>
+            </div>
+
+            <!-- Full Name Entry Section -->
+            <div *ngIf="isNameEntryRequired" class="section">
+                <h3>Enter Your Full Name</h3>
+                <input type="text" placeholder="Full Name" class="p-inputtext p-component" #fullNameInput>
+                <h5></h5>
+                <p-button label="Continue" styleClass="p-button-success" (onClick)="onNameSubmitted(fullNameInput.value)"></p-button>
+            </div>
+        </div>
+    </p-dialog>
+    </div>
+</div>
+

@@ -1,21 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { SelectItem } from 'primeng/api';
-import { CountryService } from 'src/app/demo/service/country.service';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import {PersonalInfoService} from "./services/personal-info.service";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {SelectItem} from 'primeng/api';
+import {CountryService} from 'src/app/demo/service/country.service';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UserPersonalInfoService} from "./services/user/user-personal-info.service";
 import {AuthenticationService} from "../../auth/authentication/authentication.service";
-import {ProfessionalInfoService} from "./services/professional-info.service";
-import {HealthService} from "./services/health.service";
-import {ExperienceService} from "./services/experience.service";
-import {EducationService} from "./services/education.service";
+import {UserProfessionalInfoService} from "./services/user/user-professional-info.service";
+import {UserHealthService} from "./services/user/user-health.service";
+import {UserExperienceService} from "./services/user/user-experience.service";
+import {UserEducationService} from "./services/user/user-education.service";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../environments/environment";
-import {DocumentService} from "./services/document.service";
+import {UserDocumentService} from "./services/user/user-document.service";
+import {AdminPersonalInfoService} from "./services/admin/admin-personal-info.service";
+import {PersonalInfoDTO} from "../../auth/register/sub-components/step-one/step-one.component";
+import {AdminProfessionalInfoService} from "./services/admin/admin-professional-info.service";
+import {InfoService} from "./services/InfoService";
+import {AdminHealthService} from "./services/admin/admin-health.service";
+import {AdminExperienceService} from "./services/admin/admin-experience.service";
+import {AdminEducationService} from "./services/admin/admin-education.service";
+import {UserRole} from "../../auth/login/user.model";
+
 
 @Component({
-    templateUrl: './profile.component.html'
+    selector: 'app-profile-component',
+    templateUrl: './profile.component.html',
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnChanges{
+    @Input() userId: number; // Accepting a number input
+
     driverLicenseCategories = ["None","A1", "A2", "A", "B", "B1", "BE", "C1", "C1E", "C", "CE", "D1", "D1E", "D", "DE", "F", "G", "M"];
     countries: any[] = [];
     filteredCountries: any[] = [];
@@ -39,20 +51,46 @@ export class ProfileComponent implements OnInit {
     isEducationFromEditable= false;
     documents: any[];
     uploadedFiles: any[] = [];
+    private personalInfoService: InfoService<PersonalInfoDTO>;
+    private professionalInfoService: InfoService<ProfessionalInfo>;
+    private healthInfoService: InfoService<HealthInfo>;
+    private experienceInfoService: InfoService<ExperienceDTO[]>;
+    private educationInfoService: InfoService<EducationDTO[]>;
+
 
 
     constructor(private countryService: CountryService,
                 private fb: FormBuilder,
-                private personalInfoService: PersonalInfoService,
-                private healthService: HealthService,
-                private experienceService : ExperienceService,
-                private educationService : EducationService,
-                private professionalInfoService: ProfessionalInfoService,
+                private adminService: AdminPersonalInfoService, private userService: UserPersonalInfoService,
+                private userHealthService: UserHealthService, private adminHealthService: AdminHealthService,
+                private userExperienceService : UserExperienceService, private adminExperienceService : AdminExperienceService,
+                private userEducationService : UserEducationService, private adminEducationService : AdminEducationService,
+                private userProfessionalInfoService: UserProfessionalInfoService, private adminProfessionalInfoService: AdminProfessionalInfoService,
                 private authService: AuthenticationService,
                 private http: HttpClient,
-                private documentService: DocumentService) { }
+                private documentService: UserDocumentService) {
+
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['userId']) { // Using bracket notation
+            const change = changes['userId'];
+            if (change && change.currentValue !== undefined) {
+                // Ensuring currentValue is defined and then calling loadProfile
+                this.selectServiceBasedOnUserRole();
+                this.loadUserProfile();
+                this.loadUserProfession();
+                this.loadUserHealth();
+                this.loadUserExperience();
+                this.loadUserEducation();
+                this.loadUserDocuments();
+            }
+        }
+    }
+
 
     ngOnInit() {
+        this.selectServiceBasedOnUserRole();
 
         this.personalInfoForm = this.fb.group({
             name: ['', Validators.required],
@@ -65,6 +103,8 @@ export class ProfileComponent implements OnInit {
             hasDriversLicense: [false],
             driversLicenseCategory: ['']
         });
+
+
         this.personalInfoForm.disable();
 
 
@@ -88,6 +128,7 @@ export class ProfileComponent implements OnInit {
             description: ['', Validators.required],
         });
 
+        this.loadUserProfile();
         this.loadUserProfile();
         this.loadUserProfession();
         this.loadUserHealth();
@@ -115,13 +156,35 @@ export class ProfileComponent implements OnInit {
         this.educationForm = this.fb.group({
             educationDetails: this.fb.array([])
         });
+    }
 
+    private selectServiceBasedOnUserRole() {
+        if (this.userId != undefined && this.authService.getUserRole() == UserRole.ADMIN) {
+            this.adminService.setUserId(this.userId);
+            this.personalInfoService = this.adminService;
 
+            this.adminProfessionalInfoService.setUserId(this.userId);
+            this.professionalInfoService = this.adminProfessionalInfoService;
+
+            this.adminHealthService.setUserId(this.userId);
+            this.healthInfoService = this.adminHealthService;
+
+            this.adminExperienceService.setUserId(this.userId);
+            this.experienceInfoService = this.adminExperienceService;
+
+            this.adminEducationService.setUserId(this.userId);
+            this.educationInfoService = this.adminEducationService;
+        } else if (this.authService.getUserRole() == UserRole.USER){
+            this.personalInfoService = this.userService;
+            this.professionalInfoService = this.userProfessionalInfoService;
+            this.healthInfoService = this.userHealthService;
+            this.experienceInfoService = this.userExperienceService;
+            this.educationInfoService = this.userEducationService;
+        }
     }
 
     private loadUserProfile() {
-        const userId = this.authService.getId(); // Get user ID
-        this.personalInfoService.get(userId).subscribe({
+        this.personalInfoService.get().subscribe({
             next: (profileData) => {
                 // Transform the nationalities if needed
                 const transformedNationalities = profileData.nationalities.map(nat => {
@@ -144,6 +207,8 @@ export class ProfileComponent implements OnInit {
                 console.error('Error fetching user profile', error);
             }
         });
+
+
     }
 
 
@@ -165,40 +230,20 @@ export class ProfileComponent implements OnInit {
     }
 
     myUploadHandler(event) {
-        const formData = new FormData();
-        event.files.forEach((file) => {
-            formData.append('files', file, file.name);
-        });
-
-        formData.append('userId', this.authService.getId().toString());
-
-        let url = environment.apiUrl + '/upload';
-        this.http.post(url, formData, { responseType: 'text' }).subscribe(
-            response => {
+        this.documentService.uploadDocuments(event.files,1).subscribe({
+            next: (response) => {
                 console.log(response);
                 alert("File saved successfully");
-                this.loadUserDocuments();
+                this.loadUserDocuments(); // Reload or refresh the documents list
             },
-            error => {
+            error: (error) => {
                 console.error('Error uploading file:', error);
                 alert("Failed to upload file");
             }
-        );
-    }
-
-
-    myUploadHandlerDraft(event) {
-        const userId = this.authService.getId();
-        this.documentService.uploadDocuments(event.files, userId).subscribe({
-            next: (response) => {
-                alert('Experience  saved successfully');
-                this.editEducationForm();
-            },
-            error: (error) => {
-                console.error('Error saving Experience', error);
-            }
         });
     }
+
+
 
 
 
@@ -248,15 +293,13 @@ export class ProfileComponent implements OnInit {
 
     onPersonalSubmit() {
         if (true) {
-            console.log(this.personalInfoForm.value);
             const formData = this.personalInfoForm.value;
 
             const combinedNationalities = formData.nationalities.map(nationality => `${nationality.name}, ${nationality.code}`);
             formData.nationalities = combinedNationalities;
 
-            console.log(formData);
 
-            this.personalInfoService.save(this.personalInfoForm.value, this.authService.getId())
+            this.personalInfoService.save(this.personalInfoForm.value)
                 .subscribe({
                     next: response => {
                         alert('Personal Info saved successfullyy');
@@ -278,9 +321,8 @@ export class ProfileComponent implements OnInit {
 
     onProfessionalSubmit() {
         if (true) {
-            console.log(this.professionalInfoForm.value);
 
-            this.professionalInfoService.save(this.professionalInfoForm.value, this.authService.getId())
+            this.professionalInfoService.save(this.professionalInfoForm.value)
                 .subscribe({
                     next: response => {
                         alert('Personal Info saved successfully');
@@ -305,7 +347,7 @@ export class ProfileComponent implements OnInit {
             this.currentHealthDetails);
 
 
-        this.healthService.save(healthInfoDTO, this.authService.getId()).subscribe({
+        this.healthInfoService.save(healthInfoDTO).subscribe({
             next: (response) => {
                 alert('Health info saved successfully');
                 this.editHealthForm();
@@ -321,7 +363,7 @@ export class ProfileComponent implements OnInit {
 
     private loadUserProfession() {
         const userId = this.authService.getId(); // Get user ID
-        this.professionalInfoService.get(userId).subscribe({
+        this.professionalInfoService.get().subscribe({
             next: (professionalData) => {
                 this.professionalInfoForm.patchValue({
                     expectedSalary: professionalData.expectedSalary,
@@ -342,8 +384,7 @@ export class ProfileComponent implements OnInit {
     }
 
     private loadUserHealth() {
-        const userId = this.authService.getId(); // Get user ID
-        this.healthService.get(userId).subscribe({
+        this.healthInfoService.get().subscribe({
             next: (healthInfo) => {
                 this.workRelatedIllnessDetails = healthInfo.workRelatedIllnessDetails;
                 this.currentHealthDetails = healthInfo.currentHealthDetails;
@@ -369,7 +410,7 @@ export class ProfileComponent implements OnInit {
 
     private loadUserExperience() {
         const userId = this.authService.getId(); // Get user ID
-        this.experienceService.get(userId).subscribe({
+        this.experienceInfoService.get().subscribe({
             next: (experience) => {
                 this.populateExperienceForm(experience);
             },
@@ -381,8 +422,7 @@ export class ProfileComponent implements OnInit {
     }
 
     private loadUserEducation() {
-        const userId = this.authService.getId(); // Get user ID
-        this.educationService.get(userId).subscribe({
+        this.educationInfoService.get().subscribe({
             next: (education) => {
                 this.populateEducateForm(education);
             },
@@ -405,7 +445,7 @@ export class ProfileComponent implements OnInit {
             );
         });
 
-        this.experienceService.save(experienceDTOS, this.authService.getId()).subscribe({
+        this.experienceInfoService.save(experienceDTOS).subscribe({
             next: (response) => {
                 alert('Experience  saved successfully');
                 this.editExperienceForm();
@@ -458,17 +498,13 @@ export class ProfileComponent implements OnInit {
             );
         });
 
-        console.log(educationDTOS);
-
-        this.educationService.save(educationDTOS, this.authService.getId()).subscribe({
+        this.educationInfoService.save(educationDTOS).subscribe({
             next: (response) => {
                 alert('Experience  saved successfully');
                 this.editEducationForm();
-                // Handle success
             },
             error: (error) => {
                 console.error('Error saving Experience', error);
-                // Handle error
             }
         });
     }
@@ -556,6 +592,7 @@ export class ProfileComponent implements OnInit {
 }
 
 export class PersonalInfo {
+    userId: number;
     name: string;
     middleName: string;
     surname: string;

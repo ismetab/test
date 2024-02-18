@@ -64,7 +64,10 @@ import {RippleModule} from "primeng/ripple";
         DividerModule,
         RippleModule
     ],
-	declarations: [
+    exports: [
+        ProfileComponent
+    ],
+    declarations: [
         ProfileComponent
     ]
 })

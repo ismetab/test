@@ -10,7 +10,9 @@ import {AdminGuard} from "../auth/access/admin.guard";
         { path: 'matchedJobs', data: { breadcrumb: 'matchedJobs' }, loadChildren: () => import('./jobs/matchedJobs/matchedJobs.module').then(m => m.MatchedJobsModule) },
         { path: 'appliedJobs', data: { breadcrumb: 'appliedJobs' }, loadChildren: () => import('./jobs/appliedJobs/appliedJobs.module').then(m => m.AppliedJobsModule) },
         { path: 'deniedJobs', data: { breadcrumb: 'deniedJobs' }, loadChildren: () => import('./jobs/deniedJobs/deniedJobs.module').then(m => m.DeniedJobsModule) },
-        { path: 'jobSeekers', data: { breadcrumb: 'jobSeekers' }, loadChildren: () => import('./jobseekers/job-seekers.module').then(m => m.JobSeekersModule) },
+        { path: 'jobSeekers', data: { breadcrumb: 'allJobSeekers' }, loadChildren: () => import('./alljobseekers/all-job-seekers.module').then(m => m.AllJobSeekersModule) },
+        { path: 'addJobSeekers', data: { breadcrumb: 'addJobSeekers' }, loadChildren: () => import('./addjobseekers/add-job-seekers.module').then(m => m.AddJobSeekersModule) },
+        { path: 'adduser', data: { breadcrumb: 'adduser' }, loadChildren: () => import('./addjobseekers/add-job-seekers.module').then(m => m.AddJobSeekersModule) },
         { path: 'table', data: { breadcrumb: 'table' }, loadChildren: () => import('./table/tabledemo.module').then(m => m.TableDemoModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],

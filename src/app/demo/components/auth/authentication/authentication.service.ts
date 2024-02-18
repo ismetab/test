@@ -66,6 +66,25 @@ export class AuthenticationService {
         }
         return [UserRole.ANONYMOUS]; // Default to ANONYMOUS if no token or roles are found
     }
+    
+    getUserRole(): string {
+        const token = this.getToken();
+        if (token) {
+            const decodedToken: any = jwtDecode(token);
+            const roles = decodedToken.roles || [];
+
+            // Convert roles to match the UserRole enum in Spring Boot
+            return roles.map((role: string) => {
+                switch(role) {
+                    case UserRole.ADMIN:
+                    case UserRole.USER:
+                        return role;
+                    default: return UserRole.ANONYMOUS;
+                }
+            });
+        }
+        return UserRole.ANONYMOUS; // Default to ANONYMOUS if no token or roles are found
+    }
 
     isLoggedIn(): boolean {
         const token = this.getToken();

@@ -1,0 +1,52 @@
+<h4>Health Information:</h4>
+<div class="grid p-fluid">
+    <div class="col-12 mb-12 lg:col-12 lg:mb-12">
+        <h6>Are you currently suffering from work-related illnesses? Details:</h6>
+    </div>
+    <div class="col-12 md:col-6">
+        <div class="field-radiobutton">
+            <p-radioButton name="workRelatedIllnessOptions" [(ngModel)]="healthInfoDTO.sufferingWorkRelatedIllness" value="true" id="illnessYes" binary="true" (ngModelChange)="onWorkRelatedIllnessChange($event)"></p-radioButton>
+            <label for="illnessYes">Yes</label>
+        </div>
+    </div>
+    <div class="col-12 md:col-6">
+        <div class="field-radiobutton">
+            <p-radioButton name="workRelatedIllnessOptions" [(ngModel)]="healthInfoDTO.sufferingWorkRelatedIllness" value="false" id="illnessNo" binary="true" (ngModelChange)="onWorkRelatedIllnessChange($event)"></p-radioButton>
+            <label for="illnessNo">No</label>
+        </div>
+    </div>
+</div>
+<div class="grid p-fluid">
+    <div class="col-12 mb-12 lg:col-12 lg:mb-12">
+        <span class="p-float-label" *ngIf="healthInfoDTO.sufferingWorkRelatedIllness">
+            <input type="text" id="illnessDetails" [(ngModel)]="healthInfoDTO.workRelatedIllnessDetails" pInputText>
+            <label for="illnessDetails">Details</label>
+        </span>
+    </div>
+</div>
+
+<h6>Are you 100% healthy and fit right now? Details:</h6>
+<div class="grid formgrid">
+    <div class="col-12 md:col-6">
+        <div class="field-radiobutton">
+            <p-radioButton name="currentHealthOptions" [(ngModel)]="healthInfoDTO.currentlyHealthy" value="true" id="healthYes" binary="true" (ngModelChange)="onCurrentHealthChange($event)"></p-radioButton>
+            <label for="healthYes">Yes</label>
+        </div>
+    </div>
+    <div class="col-12 md:col-6">
+        <div class="field-radiobutton">
+            <p-radioButton name="currentHealthOptions" [(ngModel)]="healthInfoDTO.currentlyHealthy" value="false" id="healthNo" binary="true" (ngModelChange)="onCurrentHealthChange($event)"></p-radioButton>
+            <label for="healthNo">No</label>
+        </div>
+    </div>
+</div>
+<h5></h5>
+<div class="grid p-fluid">
+    <div class="col-12 mb-12 lg:col-12 lg:mb-12">
+        <span class="p-float-label" *ngIf="healthInfoDTO.currentlyHealthy">
+            <input type="text" id="currentHealthDetails" [(ngModel)]="healthInfoDTO.currentHealthDetails" pInputText>
+            <label for="currentHealthDetails">Details</label>
+        </span>
+    </div>
+</div>
+<br/>

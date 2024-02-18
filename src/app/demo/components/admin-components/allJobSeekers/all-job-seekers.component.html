@@ -1,0 +1,58 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Job Seekers</h5>
+            <p-table #dt1 [value]="personalInfoList" [paginator]="true" [rows]="10" [totalRecords]="totalRecords" [loading]="loading" [rowHover]="true" styleClass="p-datatable-gridlines" [globalFilterFields]="['name', 'mobilePhone', 'address']" responsiveLayout="scroll" (onPage)="onPage($event)">
+
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-content-between flex-column sm:flex-row">
+                        <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash" (click)="clear(dt1)"></button>
+                        <span class="p-input-icon-left mb-2">
+            <i class="pi pi-search"></i>
+                            <!-- Added #searchInput reference variable -->
+            <input pInputText type="text" #searchInput (keyup.enter)="onGlobalFilter(searchInput.value)" placeholder="Search Keyword" class="w-full"/>
+        </span>
+                    </div>
+                </ng-template>
+
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Mail Address</th>
+                        <th>Details</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-personalInfo>
+                    <tr>
+                        <td><img [alt]="personalInfo.name" width="32" style="vertical-align: middle"/> {{personalInfo.name}}</td>
+                        <td>{{personalInfo.mobilePhone}}</td>
+                        <td>{{personalInfo.address}}</td>
+                        <td>
+                            <div>
+                                <span class="p-buttonset">
+                                    <button pButton type="button" icon="pi pi-id-card" class="p-button-raised p-button-info" (click)="viewDetails(personalInfo)"></button>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr><td colspan="5">No job seekers found.</td></tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr><td colspan="5">Loading job seekers data. Please wait.</td></tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="displayDialog" [modal]="true" [style]="{width: '95%'}" [closable]="true" [dismissableMask]="true">
+    <ng-container *ngIf="selectedUserId">
+        <app-profile-component [userId]="selectedUserId"></app-profile-component>
+    </ng-container>
+</p-dialog>
+
+

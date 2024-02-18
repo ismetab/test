@@ -1,0 +1,57 @@
+<h4>Experience:</h4>
+<br/>
+<br/>
+<div *ngFor="let experience of experiences; let i = index">
+    <div>
+        <div class="grid p-fluid">
+            <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+                <span class="p-float-label">
+                    <p-calendar id="experienceStart-{{i}}" [(ngModel)]="experience.startDate" name="startDate-{{i}}"></p-calendar>
+                    <label for="experienceStart-{{i}}">Start Date</label>
+                </span>
+            </div>
+            <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+                <span class="p-float-label">
+                    <p-calendar id="experienceEnd-{{i}}" [(ngModel)]="experience.endDate" name="endDate-{{i}}"></p-calendar>
+                    <label for="experienceEnd-{{i}}">End Date</label>
+                </span>
+            </div>
+            <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+                <span class="p-float-label">
+                    <input id="position-{{i}}" type="text" pInputText [(ngModel)]="experience.position" name="position-{{i}}">
+                    <label for="position-{{i}}">Position</label>
+                </span>
+            </div>
+            <div class="col-12 mb-6 lg:col-6 lg:mb-0">
+                <span class="p-float-label">
+                    <input id="CName-{{i}}" type="text" pInputText [(ngModel)]="experience.companyName" name="companyName-{{i}}">
+                    <label for="CName-{{i}}">Company Name</label>
+                </span>
+            </div>
+            <div class="col-12 mb-12 lg:col-12 lg:mb-0">
+                <span class="p-float-label">
+                    <textarea id="description-{{i}}" rows="3" cols="30" pInputTextarea [(ngModel)]="experience.description" name="description-{{i}}"></textarea>
+                    <label for="description-{{i}}">Description</label>
+                </span>
+            </div>
+        </div>
+
+        <div class="grid formgrid">
+            <div class="col-3 mb-1 lg:col-2 lg:mb-0">
+                <span class="p-float-label">
+                    <button pButton pRipple type="button" (click)="deleteExperience(i)" label="Delete" class="p-button-raised p-button-danger"></button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <p-divider></p-divider>
+    <br/>
+    <br/>
+</div>
+
+
+<div class="grid formgrid">
+    <div class="col-12 mb-2 lg:col-2 lg:mb-2">
+        <p-splitButton label="Add" icon="pi pi-plus" (click)="addExperience()" styleClass="p-button-success"></p-splitButton>
+    </div>
+</div>

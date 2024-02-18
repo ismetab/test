@@ -50,6 +50,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'JobSeekers', icon: 'pi pi-fw pi-list',
                         items: [
                             { label: 'All', icon: 'pi pi-id-card', routerLink: ['./jobSeekers']},
+                            { label: 'Add User', icon: 'pi pi-plus', routerLink: ['/register']},
                         ]
                     },
                     {
